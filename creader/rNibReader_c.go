@@ -36,6 +36,7 @@ var instance reader.RNibReader
 
 type response struct {
 	GnbList  []*entities.NbIdentity `json:"gnb_list"`
+	EnbList  []*entities.NbIdentity `json:"enb_list"`
 	ErrorMsg string                 `json:"error_msg,omitempty"`
 }
 
@@ -63,6 +64,24 @@ func getListGnbIds() unsafe.Pointer {
 
 	if listGnbIds != nil {
 		res.GnbList = listGnbIds
+	}
+
+	return createCBytesResponse(res)
+}
+
+//export getListEnbIds
+func getListEnbIds() unsafe.Pointer {
+	listEnbIds, err := instance.GetListEnbIds()
+	res := &response{}
+
+	if err != nil {
+		res.ErrorMsg = err.Error()
+
+		return createCBytesResponse(res)
+	}
+
+	if listEnbIds != nil {
+		res.EnbList = listEnbIds
 	}
 
 	return createCBytesResponse(res)
